@@ -1,0 +1,111 @@
+---
+title: "Lab 2"
+author: "Jack Novak"
+date: "2/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Searching for the Best Chocolates**
+
+We will be exploring what aspects of the chocolates may affect taste. Before setting off to the exploration, answer the following questions.
+
+```{r}
+choco <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/data/choco.csv") 
+str(choco)
+```
+
+How are the ratings distributed? Create both a histogram and a boxplot and describe them. Don’t forget to mention outliers, if there are any.
+
+```{r}
+hist(choco$Rating)
+```
+
+Chocolate ratings range between 1 and 4 with a left skewed distribution.
+
+```{r}
+boxplot(choco$Rating)
+```
+
+
+How does the number of ratings depend on the location of the company? Draw a bar chart of the number of reports.
+Do ratings depend on the cacao percentage of a chocolate bar? Create both numerical and graphical summaries, and explain. [Hint: Think about why the scatterplot is not a very good choice for visualization here.]
+Now, we are ready to explore.
+
+```{r}
+library(ggplot2)
+toplocations <- choco[choco$Location %in% c("U.S.A.","France", "Canada","U.K." ),]
+ggplot(toplocations, aes(x=Location, weight=Rating)) + geom_bar()
+```
+
+
+```{r}
+plot(choco$Rating, choco$Cocoa_Percent, xlab='Rating', ylab='Percent Cacao', main='Percent Cacao versus Rating')
+```
+
+```{r}
+cor(choco$Rating, choco$Cocoa_Percent)
+```
+There is a slight negative correlation between percent cacao and the rating.
+
+```{r}
+mean(choco$Cocoa_Percent)-median(choco$Cocoa_Percent)
+```
+The distribution of percent cacao, like the ratings, is skewed left.
+
+How do different bean origins compare in terms of the flavor of chocolates? Are beans from some places better than the other? Create both numerical and graphical summaries, and explain.
+Brainstorm two analyses you would like to perform (with your teammates). Describe in plain language what comparisons are you making. Create suitable numerical and graphical summaries for your analyses. Describe the results.
+
+```{r}
+centralamerica <- choco[c(choco$Location %in% c("Costa Rica","El Salvador", "Mexico", "Dominican Republic", "Nicaragua")),]
+southamerica <- choco[c(choco$Location %in% c("Colombia", "Brazil", "Ecuador", "Argentina", "Brazil", "Venezuela")),]
+
+plot(centralamerica$Cocoa_Percent, centralamerica$Rating, col='red', xlab='Cacao Percent', ylab='Rating', main='Cocoa Percent and Ratings in Central America Versus South America') 
+points(southamerica$Cocoa_Percent, southamerica$Rating, col='blue')
+```
+```{r}
+mean(southamerica$Rating)
+```
+```{r}
+mean(centralamerica$Rating)
+```
+On average, chocolate from South American countries has a higher rating (3.13) than chocolate from Central American countries (3.08).
+
+```{r}
+t.test(centralamerica$Rating, southamerica$Rating, var.equal=TRUE)
+```
+There is insufficient evidence to reject the null hypothesis that the mean rating in South America is equal to the mean rating in Central America.
+
+
+
+
+Collaboration Workflow
+Overview
+Discuss with your teammate plans for the analyses.
+Include your own analysis in an individual file. This file is the “scratch file”, which should include all your own exploration and analysis, even if you would not show those results in your final report. Name your own file as either individual1.Rmd, individual2.Rmd, or individual3.Rmd after coordinating with your teammate(s), if you have.
+After you have decided the exploration/analysis to show in your report, collaborate on a single team.Rmd file which includes the final analysis. Only the team.Rmd and the knitted team.html files will be graded, even if you are working on this lab by yourself.
+Recap: Collaborating on a GitHub repository
+Individual 1:
+
+Log into github, and create a repository called ds202_lab2
+Go into the settings of the repository and add your team member as a collaborator
+Push individual1.Rmd and individual1.html to the remote.
+When the above is finished, Individual 2:
+
+Log into GitHub and accept the invitation to work on the team repo.
+Clone the remote repo of Individual 1’s.
+Add individual2.Rmd and individual2.html to the local repo, and push.
+(Repeat if there is a third teammate)
+
+Working on the team.Rmd
+One of the teammates will make a draft team.Rmd, include the file in a git commit, and then push to the remote.
+The other teammate will pull, make additions and modifications to team.Rmd, create a commit, and then push.
+Repeat as necessary.
+
+
+
+
+
